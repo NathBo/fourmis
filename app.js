@@ -1148,7 +1148,6 @@ function init() {
   selectAnt(-1); // Hide ant editor initially
   updateAntList();
   renderAll();
-  loadDemo();
   editor.animationFrame = requestAnimationFrame(loop);
 }
 
