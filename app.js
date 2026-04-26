@@ -24,7 +24,6 @@ const TOOL_LIST = [
   { key: "input", label: "INPUT" },
   { key: "output", label: "OUTPUT" },
   { key: "halt", label: "HALT" },
-  { key: "ant", label: "Fourmi" },
   { key: "erase", label: "Effacer" },
 ];
 
@@ -45,8 +44,6 @@ const ui = {
   toolButtons: document.getElementById("toolButtons"),
   currentToolLabel: document.getElementById("currentToolLabel"),
   inputValue: document.getElementById("inputValue"),
-  antDir: document.getElementById("antDir"),
-  antState: document.getElementById("antState"),
   runBtn: document.getElementById("runBtn"),
   pauseBtn: document.getElementById("pauseBtn"),
   stepBtn: document.getElementById("stepBtn"),
@@ -70,6 +67,24 @@ const ui = {
   importBtn: document.getElementById("importBtn"),
   jsonArea: document.getElementById("jsonArea"),
   runtimeDump: document.getElementById("runtimeDump"),
+  currentBehaviorSelect: document.getElementById("currentBehaviorSelect"),
+  addBehaviorBtn: document.getElementById("addBehaviorBtn"),
+  removeBehaviorBtn: document.getElementById("removeBehaviorBtn"),
+  behaviorNameInput: document.getElementById("behaviorNameInput"),
+  renameBehaviorBtn: document.getElementById("renameBehaviorBtn"),
+  currentBehaviorLabel: document.getElementById("currentBehaviorLabel"),
+  addAntBtn: document.getElementById("addAntBtn"),
+  removeAntBtn: document.getElementById("removeAntBtn"),
+  duplicateAntBtn: document.getElementById("duplicateAntBtn"),
+  antEditor: document.getElementById("antEditor"),
+  antXInput: document.getElementById("antXInput"),
+  antYInput: document.getElementById("antYInput"),
+  antDirInput: document.getElementById("antDirInput"),
+  antStateInput: document.getElementById("antStateInput"),
+  antBehaviorInput: document.getElementById("antBehaviorInput"),
+  saveAntBtn: document.getElementById("saveAntBtn"),
+  cancelAntBtn: document.getElementById("cancelAntBtn"),
+  antList: document.getElementById("antList"),
 };
 
 function create2DArray(width, height, value = 0) {
@@ -106,6 +121,14 @@ function createTransitionTable(stateCount) {
   return table;
 }
 
+function createBehavior(id, name = null, stateCount = 2) {
+  return {
+    id,
+    name: name || `Behavior ${id}`,
+    transitions: createTransitionTable(stateCount),
+  };
+}
+
 function cloneProgram(program) {
   return JSON.parse(JSON.stringify(program));
 }
@@ -121,7 +144,8 @@ function createEmptyProgram(size = 24, stateCount = 2) {
       halt: { x: Math.min(size - 1, size - 3), y: Math.min(size - 1, size - 3) },
     },
     ants: [],
-    transitions: createTransitionTable(stateCount),
+    behaviors: [createBehavior(0, "Default", stateCount)],
+    nextBehaviorId: 1,
   };
 }
 
@@ -132,6 +156,8 @@ const editor = {
   animationFrame: 0,
   lastFrameTime: 0,
   cellSize: 24,
+  currentBehaviorId: 0,
+  selectedAntIndex: -1,
 };
 
 function buildToolButtons() {
@@ -214,14 +240,6 @@ function applyToolAt(x, y) {
     program.markers.outputs.push({ x, y });
   } else if (editor.tool === "halt") {
     program.markers.halt = { x, y };
-  } else if (editor.tool === "ant") {
-    removeAntsAt(program, x, y);
-    program.ants.push({
-      x,
-      y,
-      dir: ui.antDir.value,
-      state: Math.max(0, Math.floor(Number(ui.antState.value) || 0)),
-    });
   }
 
   resetSimulation();
@@ -276,11 +294,19 @@ function computeMove(ant, move) {
   return { newDir, dx: delta.dx, dy: delta.dy };
 }
 
-function transitionFor(program, state, bit) {
-  const safeState = Object.prototype.hasOwnProperty.call(program.transitions, state)
-    ? state
+function transitionFor(program, ant, bit) {
+  const behavior = program.behaviors.find(b => b.id === ant.behaviorId);
+  if (!behavior) {
+    // Fallback to first behavior if ant's behavior doesn't exist
+    const fallbackBehavior = program.behaviors[0];
+    if (!fallbackBehavior) return defaultTransition(ant.state, bit);
+    behavior = fallbackBehavior;
+  }
+
+  const safeState = Object.prototype.hasOwnProperty.call(behavior.transitions, ant.state)
+    ? ant.state
     : 0;
-  return program.transitions[safeState][bit] || program.transitions[safeState][0];
+  return behavior.transitions[safeState][bit] || behavior.transitions[safeState][0];
 }
 
 function applyInputsToGrid(program) {
@@ -341,7 +367,7 @@ function tickSimulation() {
     const currentX = ant.x;
     const currentY = ant.y;
     const bit = program.grid[currentY][currentX];
-    const rule = transitionFor(program, ant.state, bit);
+    const rule = transitionFor(program, ant, bit);
     const step = computeMove(ant, rule.move);
     const next = wrapPosition(program, currentX + step.dx, currentY + step.dy);
 
@@ -445,12 +471,27 @@ function drawAnts(program) {
   const ctx = ui.ctx;
   const cell = editor.cellSize;
 
+  // Define colors for different behaviors
+  const behaviorColors = [
+    "#ffffff", // Default white
+    "#ff6b6b", // Red
+    "#4ecdc4", // Teal
+    "#45b7d1", // Blue
+    "#f9ca24", // Yellow
+    "#f0932b", // Orange
+    "#eb4d4b", // Dark red
+    "#6c5ce7", // Purple
+  ];
+
   program.ants.forEach((ant, index) => {
     const cx = ant.x * cell + cell / 2;
     const cy = ant.y * cell + cell / 2;
     const r = Math.max(6, cell * 0.22);
 
-    ctx.fillStyle = COLORS.ant;
+    const colorIndex = ant.behaviorId % behaviorColors.length;
+    const antColor = behaviorColors[colorIndex];
+
+    ctx.fillStyle = antColor;
     ctx.strokeStyle = COLORS.antOutline;
     ctx.lineWidth = 2;
     ctx.beginPath();
@@ -499,19 +540,22 @@ function computeOutputSummary(sim) {
 }
 
 function updateTransitionTable() {
-  const stateCount = clampStateCount(Number(ui.stateCountInput.value) || 1);
+  const currentBehavior = editor.program.behaviors.find(b => b.id === editor.currentBehaviorId);
+  if (!currentBehavior) return;
+
+  const stateCount = clampStateCount(Object.keys(currentBehavior.transitions).length);
   ui.transitionBody.innerHTML = "";
 
   for (let state = 0; state < stateCount; state += 1) {
-    if (!editor.program.transitions[state]) {
-      editor.program.transitions[state] = {
+    if (!currentBehavior.transitions[state]) {
+      currentBehavior.transitions[state] = {
         0: defaultTransition(state, 0),
         1: defaultTransition(state, 1),
       };
     }
 
     for (const bit of [0, 1]) {
-      const tr = editor.program.transitions[state][bit] || defaultTransition(state, bit);
+      const tr = currentBehavior.transitions[state][bit] || defaultTransition(state, bit);
       const row = document.createElement("tr");
 
       row.innerHTML = `
@@ -533,7 +577,7 @@ function updateTransitionTable() {
         moveSelect.appendChild(opt);
       }
       moveSelect.addEventListener("change", () => {
-        editor.program.transitions[state][bit].move = moveSelect.value;
+        currentBehavior.transitions[state][bit].move = moveSelect.value;
         resetSimulation();
         renderAll();
       });
@@ -549,7 +593,7 @@ function updateTransitionTable() {
         writeSelect.appendChild(opt);
       });
       writeSelect.addEventListener("change", () => {
-        editor.program.transitions[state][bit].writeBit = Number(writeSelect.value);
+        currentBehavior.transitions[state][bit].writeBit = Number(writeSelect.value);
         resetSimulation();
         renderAll();
       });
@@ -560,11 +604,11 @@ function updateTransitionTable() {
       nextStateInput.step = "1";
       nextStateInput.value = String(tr.nextState);
       nextStateInput.addEventListener("change", () => {
-        editor.program.transitions[state][bit].nextState = Math.max(
+        currentBehavior.transitions[state][bit].nextState = Math.max(
           0,
           Math.floor(Number(nextStateInput.value) || 0),
         );
-        nextStateInput.value = String(editor.program.transitions[state][bit].nextState);
+        nextStateInput.value = String(currentBehavior.transitions[state][bit].nextState);
         resetSimulation();
         renderAll();
       });
@@ -577,16 +621,19 @@ function updateTransitionTable() {
   }
 }
 
-function trimTransitionsToStateCount(stateCount) {
+function trimTransitionsToStateCount(behaviorId, stateCount) {
+  const behavior = editor.program.behaviors.find(b => b.id === behaviorId);
+  if (!behavior) return;
+
   const newTransitions = {};
   for (let state = 0; state < stateCount; state += 1) {
-    const existing = editor.program.transitions[state];
+    const existing = behavior.transitions[state];
     newTransitions[state] = {
       0: existing?.[0] || defaultTransition(state, 0),
       1: existing?.[1] || defaultTransition(state, 1),
     };
   }
-  editor.program.transitions = newTransitions;
+  behavior.transitions = newTransitions;
 }
 
 function updateUI() {
@@ -647,11 +694,23 @@ function importProgram() {
   try {
     const imported = JSON.parse(ui.jsonArea.value);
     validateProgramShape(imported);
+
+    // Handle backward compatibility: convert old transitions to behaviors
+    if (imported.transitions && !imported.behaviors) {
+      imported.behaviors = [createBehavior(0, "Default")];
+      imported.behaviors[0].transitions = imported.transitions;
+      imported.nextBehaviorId = 1;
+      delete imported.transitions;
+    }
+
     editor.program = imported;
     ui.gridSizeInput.value = String(imported.width);
-    ui.stateCountInput.value = String(Object.keys(imported.transitions).length);
+    ui.stateCountInput.value = String(Object.keys(imported.behaviors[0]?.transitions || {}).length || 2);
     resetSimulation();
+    updateBehaviorUI();
     updateTransitionTable();
+    selectAnt(-1);
+    updateAntList();
     renderAll();
   } catch (error) {
     alert(`Import impossible: ${error.message}`);
@@ -685,14 +744,18 @@ function validateProgramShape(program) {
   if (!Array.isArray(program.ants)) {
     throw new Error("ants invalide");
   }
-  if (!program.transitions || typeof program.transitions !== "object") {
-    throw new Error("transitions invalides");
+  // Allow both old transitions and new behaviors
+  if (!program.transitions && !program.behaviors) {
+    throw new Error("transitions ou behaviors manquant");
+  }
+  if (program.behaviors && !Array.isArray(program.behaviors)) {
+    throw new Error("behaviors invalide");
   }
 }
 
 function resizeProgram(newSize) {
   const size = Math.max(8, Math.min(64, Math.floor(Number(newSize) || 24)));
-  const next = createEmptyProgram(size, Object.keys(editor.program.transitions).length);
+  const next = createEmptyProgram(size, Object.keys(editor.program.behaviors[0]?.transitions || {}).length || 2);
 
   for (let y = 0; y < Math.min(size, editor.program.height); y += 1) {
     for (let x = 0; x < Math.min(size, editor.program.width); x += 1) {
@@ -714,20 +777,28 @@ function resizeProgram(newSize) {
       : { x: size - 2, y: size - 2 };
 
   next.ants = editor.program.ants.filter((ant) => ant.x < size && ant.y < size);
-  next.transitions = cloneProgram({ transitions: editor.program.transitions }).transitions;
+  next.behaviors = editor.program.behaviors.map(behavior => ({
+    ...behavior,
+    transitions: cloneProgram({ transitions: behavior.transitions }).transitions
+  }));
+  next.nextBehaviorId = editor.program.nextBehaviorId;
 
   editor.program = next;
   resetSimulation();
+  updateBehaviorUI();
   updateTransitionTable();
+  updateAntList();
   renderAll();
 }
 
 function clearProgram() {
-  const stateCount = Object.keys(editor.program.transitions).length;
+  const stateCount = Object.keys(editor.program.behaviors[0]?.transitions || {}).length || 2;
   editor.program = createEmptyProgram(editor.program.width, stateCount);
   ui.gridSizeInput.value = String(editor.program.width);
   resetSimulation();
+  updateBehaviorUI();
   updateTransitionTable();
+  updateAntList();
   renderAll();
 }
 
@@ -740,9 +811,9 @@ function loadDemo() {
   program.markers.outputs = [{ x: 18, y: 12 }];
   program.markers.halt = { x: 20, y: 12 };
 
-  program.ants = [{ x: 2, y: 12, dir: "E", state: 0 }];
+  program.ants = [{ x: 2, y: 12, dir: "E", state: 0, behaviorId: 0 }];
 
-  program.transitions = {
+  program.behaviors[0].transitions = {
     0: {
       0: { move: "forward", writeBit: 1, nextState: 0 },
       1: { move: "forward", writeBit: 1, nextState: 0 },
@@ -757,9 +828,188 @@ function loadDemo() {
   ui.gridSizeInput.value = "24";
   ui.stateCountInput.value = "2";
   resetSimulation();
+  updateBehaviorUI();
   updateTransitionTable();
   renderAll();
   ui.jsonArea.value = "";
+}
+
+function updateBehaviorUI() {
+  // Update behavior selector
+  ui.currentBehaviorSelect.innerHTML = "";
+  editor.program.behaviors.forEach(behavior => {
+    const option = document.createElement("option");
+    option.value = behavior.id;
+    option.textContent = behavior.name;
+    if (behavior.id === editor.currentBehaviorId) {
+      option.selected = true;
+    }
+    ui.currentBehaviorSelect.appendChild(option);
+  });
+
+  // Update ant behavior selector
+  ui.antBehaviorInput.innerHTML = "";
+  editor.program.behaviors.forEach(behavior => {
+    const option = document.createElement("option");
+    option.value = behavior.id;
+    option.textContent = behavior.name;
+    ui.antBehaviorInput.appendChild(option);
+  });
+
+  // Update current behavior label
+  const currentBehavior = editor.program.behaviors.find(b => b.id === editor.currentBehaviorId);
+  ui.currentBehaviorLabel.textContent = currentBehavior ? `(${currentBehavior.name})` : "(Unknown)";
+
+  // Update behavior name input
+  ui.behaviorNameInput.value = currentBehavior ? currentBehavior.name : "";
+}
+
+function updateAntList() {
+  ui.antList.innerHTML = "";
+  editor.program.ants.forEach((ant, index) => {
+    const antDiv = document.createElement("div");
+    antDiv.className = `ant-item ${index === editor.selectedAntIndex ? 'selected' : ''}`;
+    antDiv.style.cursor = "pointer";
+
+    const behavior = editor.program.behaviors.find(b => b.id === ant.behaviorId);
+    const behaviorName = behavior ? behavior.name : "Unknown";
+
+    antDiv.innerHTML = `
+      <div class="ant-info">
+        <strong>Fourmi ${index}</strong><br>
+        Position: (${ant.x}, ${ant.y}) | Dir: ${ant.dir} | État: ${ant.state} | Comportement: ${behaviorName}
+      </div>
+    `;
+
+    antDiv.addEventListener("click", () => {
+      selectAnt(index);
+    });
+
+    ui.antList.appendChild(antDiv);
+  });
+
+  // Update remove and duplicate button states
+  ui.removeAntBtn.disabled = editor.selectedAntIndex === -1;
+  ui.duplicateAntBtn.disabled = editor.selectedAntIndex === -1;
+}
+
+function selectAnt(index) {
+  editor.selectedAntIndex = index;
+  updateAntList();
+
+  if (index >= 0) {
+    const ant = editor.program.ants[index];
+    ui.antXInput.value = ant.x;
+    ui.antYInput.value = ant.y;
+    ui.antXInput.max = editor.program.width - 1;
+    ui.antYInput.max = editor.program.height - 1;
+    ui.antDirInput.value = ant.dir;
+    ui.antStateInput.value = ant.state;
+    ui.antBehaviorInput.value = ant.behaviorId;
+    ui.antEditor.style.display = "block";
+  } else {
+    ui.antEditor.style.display = "none";
+  }
+}
+
+function saveAnt() {
+  if (editor.selectedAntIndex === -1) return;
+
+  const ant = editor.program.ants[editor.selectedAntIndex];
+  const newX = Math.max(0, Math.min(editor.program.width - 1, Math.floor(Number(ui.antXInput.value) || 0)));
+  const newY = Math.max(0, Math.min(editor.program.height - 1, Math.floor(Number(ui.antYInput.value) || 0)));
+
+  // Check if position conflicts with another ant
+  const conflictIndex = editor.program.ants.findIndex((a, i) => i !== editor.selectedAntIndex && a.x === newX && a.y === newY);
+  if (conflictIndex !== -1) {
+    alert(`Position occupée par la fourmi ${conflictIndex}`);
+    return;
+  }
+
+  ant.x = newX;
+  ant.y = newY;
+  ant.dir = ui.antDirInput.value;
+  ant.state = Math.max(0, Math.floor(Number(ui.antStateInput.value) || 0));
+  ant.behaviorId = Number(ui.antBehaviorInput.value);
+
+  resetSimulation();
+  updateAntList();
+  renderAll();
+}
+
+function addAnt() {
+  // Find a free position
+  let x = 0, y = 0;
+  let attempts = 0;
+  while (attempts < editor.program.width * editor.program.height) {
+    const conflict = editor.program.ants.some(ant => ant.x === x && ant.y === y);
+    if (!conflict) break;
+
+    x++;
+    if (x >= editor.program.width) {
+      x = 0;
+      y++;
+      if (y >= editor.program.height) {
+        y = 0;
+      }
+    }
+    attempts++;
+  }
+
+  if (attempts >= editor.program.width * editor.program.height) {
+    alert("Aucune position libre pour une nouvelle fourmi");
+    return;
+  }
+
+  editor.program.ants.push({
+    x,
+    y,
+    dir: "E",
+    state: 0,
+    behaviorId: editor.currentBehaviorId,
+  });
+
+  selectAnt(editor.program.ants.length - 1);
+  resetSimulation();
+  updateAntList();
+  renderAll();
+}
+
+function removeAnt() {
+  if (editor.selectedAntIndex === -1) return;
+
+  editor.program.ants.splice(editor.selectedAntIndex, 1);
+  editor.selectedAntIndex = -1;
+  ui.antEditor.style.display = "none";
+  resetSimulation();
+  updateAntList();
+  renderAll();
+}
+
+function duplicateAnt() {
+  if (editor.selectedAntIndex === -1) return;
+
+  const originalAnt = editor.program.ants[editor.selectedAntIndex];
+  const newAnt = {
+    x: Math.min(editor.program.width - 1, originalAnt.x + 1),
+    y: originalAnt.y,
+    dir: originalAnt.dir,
+    state: originalAnt.state,
+    behaviorId: originalAnt.behaviorId,
+  };
+
+  // Check if position is free
+  const conflict = editor.program.ants.some(ant => ant.x === newAnt.x && ant.y === newAnt.y);
+  if (conflict) {
+    alert("Position adjacente occupée");
+    return;
+  }
+
+  editor.program.ants.push(newAnt);
+  selectAnt(editor.program.ants.length - 1);
+  resetSimulation();
+  updateAntList();
+  renderAll();
 }
 
 function bindEvents() {
@@ -809,8 +1059,9 @@ function bindEvents() {
   ui.applyStateCountBtn.addEventListener("click", () => {
     const stateCount = clampStateCount(Number(ui.stateCountInput.value) || 1);
     ui.stateCountInput.value = String(stateCount);
-    trimTransitionsToStateCount(stateCount);
+    trimTransitionsToStateCount(editor.currentBehaviorId, stateCount);
 
+    // Update all ants' states if they exceed the new state count
     editor.program.ants.forEach((ant) => {
       if (ant.state >= stateCount) {
         ant.state = stateCount - 1;
@@ -823,15 +1074,79 @@ function bindEvents() {
   });
 
   ui.exportBtn.addEventListener("click", exportProgram);
-  ui.importBtn.addEventListener("click", importProgram);
+  ui.currentBehaviorSelect.addEventListener("change", () => {
+    editor.currentBehaviorId = Number(ui.currentBehaviorSelect.value);
+    updateBehaviorUI();
+    updateTransitionTable();
+  });
+
+  ui.addBehaviorBtn.addEventListener("click", () => {
+    const newId = editor.program.nextBehaviorId++;
+    const newBehavior = createBehavior(newId, `Behavior ${newId}`);
+    editor.program.behaviors.push(newBehavior);
+    editor.currentBehaviorId = newId;
+    updateBehaviorUI();
+    updateTransitionTable();
+    renderAll();
+  });
+
+  ui.removeBehaviorBtn.addEventListener("click", () => {
+    if (editor.program.behaviors.length <= 1) {
+      alert("Cannot remove the last behavior");
+      return;
+    }
+
+    const behaviorToRemove = editor.currentBehaviorId;
+    editor.program.behaviors = editor.program.behaviors.filter(b => b.id !== behaviorToRemove);
+
+    // Reassign ants using the removed behavior to the first remaining behavior
+    editor.program.ants.forEach(ant => {
+      if (ant.behaviorId === behaviorToRemove) {
+        ant.behaviorId = editor.program.behaviors[0].id;
+      }
+    });
+
+    editor.currentBehaviorId = editor.program.behaviors[0].id;
+    updateBehaviorUI();
+    updateTransitionTable();
+    updateAntList();
+    renderAll();
+  });
+
+  ui.renameBehaviorBtn.addEventListener("click", () => {
+    const currentBehavior = editor.program.behaviors.find(b => b.id === editor.currentBehaviorId);
+    if (currentBehavior) {
+      currentBehavior.name = ui.behaviorNameInput.value || `Behavior ${currentBehavior.id}`;
+      updateBehaviorUI();
+    }
+  });
+
+  ui.behaviorNameInput.addEventListener("change", () => {
+    const currentBehavior = editor.program.behaviors.find(b => b.id === editor.currentBehaviorId);
+    if (currentBehavior) {
+      currentBehavior.name = ui.behaviorNameInput.value || `Behavior ${currentBehavior.id}`;
+      updateBehaviorUI();
+    }
+  });
+
+  // Add listeners for ant property changes
+  ui.addAntBtn.addEventListener("click", addAnt);
+  ui.removeAntBtn.addEventListener("click", removeAnt);
+  ui.duplicateAntBtn.addEventListener("click", duplicateAnt);
+  ui.saveAntBtn.addEventListener("click", saveAnt);
+  ui.cancelAntBtn.addEventListener("click", () => selectAnt(-1));
 }
+
 
 function init() {
   buildToolButtons();
   bindEvents();
   setTool(editor.tool);
   resetSimulation();
+  updateBehaviorUI();
   updateTransitionTable();
+  selectAnt(-1); // Hide ant editor initially
+  updateAntList();
   renderAll();
   loadDemo();
   editor.animationFrame = requestAnimationFrame(loop);

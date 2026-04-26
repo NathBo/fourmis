@@ -226,6 +226,49 @@ pre {
 
 .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
 
+.ant-item {
+  background: #0f1430;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 8px;
+  margin-bottom: 6px;
+  transition: border-color 120ms ease;
+}
+
+.ant-item:hover {
+  border-color: var(--accent);
+}
+
+.ant-item.selected {
+  border-color: var(--accent);
+  background: rgba(122, 162, 255, 0.1);
+}
+
+.ant-info {
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.ant-info strong {
+  color: var(--accent);
+}
+
+.ant-editor {
+  background: var(--panel-2);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 8px;
+  margin-bottom: 8px;
+}
+
+.ant-editor .row {
+  margin-bottom: 6px;
+}
+
+.ant-editor .row:last-child {
+  margin-bottom: 0;
+}
+
 @media (max-width: 1280px) {
   .app {
     grid-template-columns: 320px 1fr;

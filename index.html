@@ -25,19 +25,65 @@
             <option value="1" selected>1</option>
           </select>
         </div>
-        <div class="row">
-          <label>Direction fourmi</label>
-          <select id="antDir">
-            <option value="N">N</option>
-            <option value="E" selected>E</option>
-            <option value="S">S</option>
-            <option value="W">W</option>
-          </select>
-          <label>État</label>
-          <input id="antState" type="number" min="0" step="1" value="0" />
-        </div>
         <div class="small">
           Clic gauche pour poser. Le mode <span class="mono">Effacer</span> enlève marqueurs et fourmis initiales, et remet la case à 0.
+        </div>
+      </div>
+
+      <div class="group">
+        <h2>Comportements</h2>
+        <div class="row">
+          <select id="currentBehaviorSelect"></select>
+          <button id="addBehaviorBtn">Ajouter</button>
+          <button id="removeBehaviorBtn">Supprimer</button>
+        </div>
+        <div class="row">
+          <label>Nom</label>
+          <input id="behaviorNameInput" type="text" value="Default" />
+          <button id="renameBehaviorBtn">Renommer</button>
+        </div>
+        <div class="small">
+          Chaque comportement a ses propres règles de transition.
+        </div>
+      </div>
+
+      <div class="group">
+        <h2>Fourmis</h2>
+        <div class="row">
+          <button id="addAntBtn">Ajouter Fourmi</button>
+          <button id="removeAntBtn">Supprimer</button>
+          <button id="duplicateAntBtn">Dupliquer</button>
+        </div>
+        <div id="antEditor" class="ant-editor" style="display: none;">
+          <div class="row">
+            <label>Position X</label>
+            <input id="antXInput" type="number" min="0" value="0" />
+            <label>Y</label>
+            <input id="antYInput" type="number" min="0" value="0" />
+          </div>
+          <div class="row">
+            <label>Direction</label>
+            <select id="antDirInput">
+              <option value="N">N</option>
+              <option value="E" selected>E</option>
+              <option value="S">S</option>
+              <option value="W">W</option>
+            </select>
+            <label>État</label>
+            <input id="antStateInput" type="number" min="0" step="1" value="0" />
+            <label>Comportement</label>
+            <select id="antBehaviorInput">
+              <option value="0">Default</option>
+            </select>
+          </div>
+          <div class="row">
+            <button id="saveAntBtn">Sauvegarder</button>
+            <button id="cancelAntBtn">Annuler</button>
+          </div>
+        </div>
+        <div id="antList"></div>
+        <div class="small">
+          Sélectionnez une fourmi pour modifier ses propriétés.
         </div>
       </div>
 
@@ -107,7 +153,7 @@
     </main>
 
     <aside class="panel right">
-      <h2>Transitions</h2>
+      <h2>Transitions <span id="currentBehaviorLabel" class="mono">(Default)</span></h2>
       <div class="group">
         <div class="row">
           <label>Nombre d’états</label>
