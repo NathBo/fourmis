@@ -137,15 +137,15 @@
       </div>
 
       <div class="group">
-        <h2>Règles choisies</h2>
+        <h2>Règles</h2>
         <ul class="small">
           <li>La fourmi lit le bit de sa case courante.</li>
           <li>Transition = <span class="mono">(state, bit)</span> → <span class="mono">(move, writeBit, nextState)</span>.</li>
-          <li>Elle se déplace, puis écrit sur la case qu’elle quitte.</li>
+          <li>Elle se déplace, puis écrit sur la case qu'elle quitte.</li>
           <li>Ordre déterministe : fourmi 0, puis 1, puis 2…</li>
-          <li>La simulation s’arrête dès que la case HALT vaut 1.</li>
-          <li>Les marqueurs INPUT / OUTPUT / HALT n’influencent pas les règles des fourmis.</li>
-          <li>Le monde wrappe sur les bords comme Pac-Man.</li>
+          <li>La simulation s'arrête dès que la case HALT vaut 1.</li>
+          <li>Les marqueurs INPUT / OUTPUT / HALT n'influencent pas les règles des fourmis.</li>
+          <li>Le monde wrappe sur les bords (comme Pac-Man).</li>
         </ul>
       </div>
     </aside>
@@ -166,7 +166,7 @@
       <h2>Transitions <span id="currentBehaviorLabel" class="mono">(Default)</span></h2>
       <div class="group">
         <div class="row">
-          <label>Nombre d’états</label>
+          <label>Nombre d'états</label>
           <input id="stateCountInput" type="number" min="1" max="16" step="1" value="2" />
           <button id="applyStateCountBtn">Appliquer</button>
         </div>
