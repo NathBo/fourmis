@@ -75,6 +75,8 @@ const ui = {
   currentBehaviorLabel: document.getElementById("currentBehaviorLabel"),
   exportBehaviorBtn: null, // Will be created dynamically
   importBehaviorBtn: null, // Will be created dynamically
+  inputList: document.getElementById("inputList"),
+  outputList: document.getElementById("outputList"),
   addAntBtn: document.getElementById("addAntBtn"),
   removeAntBtn: document.getElementById("removeAntBtn"),
   duplicateAntBtn: document.getElementById("duplicateAntBtn"),
@@ -541,6 +543,82 @@ function computeOutputSummary(sim) {
   }));
 }
 
+function renderInputList() {
+  ui.inputList.innerHTML = "";
+
+  if (editor.program.markers.inputs.length === 0) {
+    ui.inputList.textContent = "Aucun INPUT défini.";
+    return;
+  }
+
+  editor.program.markers.inputs.forEach((input, index) => {
+    const row = document.createElement("div");
+    row.className = "marker-item";
+
+    const info = document.createElement("div");
+    info.className = "ant-info";
+    info.innerHTML = `<strong>INPUT ${index}</strong><br>(${input.x}, ${input.y})`;
+
+    const valueSelect = document.createElement("select");
+    [0, 1].forEach((bit) => {
+      const opt = document.createElement("option");
+      opt.value = String(bit);
+      opt.textContent = String(bit);
+      if (bit === input.value) opt.selected = true;
+      valueSelect.appendChild(opt);
+    });
+    valueSelect.addEventListener("change", () => {
+      input.value = Number(valueSelect.value);
+      resetSimulation();
+      renderAll();
+    });
+
+    const removeBtn = document.createElement("button");
+    removeBtn.textContent = "Supprimer";
+    removeBtn.addEventListener("click", () => {
+      removeMarkersAt(editor.program, input.x, input.y);
+      resetSimulation();
+      renderAll();
+    });
+
+    row.appendChild(info);
+    row.appendChild(valueSelect);
+    row.appendChild(removeBtn);
+    ui.inputList.appendChild(row);
+  });
+}
+
+function renderOutputList(sim) {
+  ui.outputList.innerHTML = "";
+  const outputs = sim ? computeOutputSummary(sim) : computeOutputSummary(createSimulationFromProgram(editor.program));
+
+  if (outputs.length === 0) {
+    ui.outputList.textContent = "Aucun OUTPUT défini.";
+    return;
+  }
+
+  outputs.forEach((output) => {
+    const row = document.createElement("div");
+    row.className = "marker-item";
+
+    const info = document.createElement("div");
+    info.className = "ant-info";
+    info.innerHTML = `<strong>OUTPUT ${output.index}</strong><br>(${output.x}, ${output.y}) = ${output.value}`;
+
+    const removeBtn = document.createElement("button");
+    removeBtn.textContent = "Supprimer";
+    removeBtn.addEventListener("click", () => {
+      removeMarkersAt(editor.program, output.x, output.y);
+      resetSimulation();
+      renderAll();
+    });
+
+    row.appendChild(info);
+    row.appendChild(removeBtn);
+    ui.outputList.appendChild(row);
+  });
+}
+
 function updateTransitionTable() {
   const currentBehavior = editor.program.behaviors.find(b => b.id === editor.currentBehaviorId);
   if (!currentBehavior) return;
@@ -662,6 +740,9 @@ function updateUI() {
   ui.outputSummary.textContent = outputs.length
     ? outputs.map((o) => `OUT${o.index}@(${o.x},${o.y})=${o.value}`).join("  ·  ")
     : "Aucun OUTPUT";
+
+  renderInputList();
+  renderOutputList(sim);
 
   if (!sim?.program.markers.halt) {
     ui.statusLabel.textContent = "Pas de HALT défini";

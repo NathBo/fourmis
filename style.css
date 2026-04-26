@@ -253,6 +253,27 @@ pre {
   color: var(--accent);
 }
 
+.marker-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #0f1430;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 10px;
+  margin-bottom: 8px;
+}
+
+.marker-item button,
+.marker-item select {
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.marker-item .ant-info {
+  flex: 1;
+}
+
 .ant-editor {
   background: var(--panel-2);
   border: 1px solid var(--line);
