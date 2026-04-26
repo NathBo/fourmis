@@ -1446,6 +1446,24 @@ function bindEvents() {
       ui.runBtn.click();
     }
   });
+  document.addEventListener('keydown', (event) => {
+    if (event.code === 'KeyP' && event.target.tagName !== 'INPUT' && event.target.tagName !== 'TEXTAREA' && event.target.tagName !== 'SELECT') {
+      event.preventDefault();
+      ui.pauseBtn.click();
+    }
+  });
+  document.addEventListener('keydown', (event) => {
+    if (event.code === 'KeyR' && event.target.tagName !== 'INPUT' && event.target.tagName !== 'TEXTAREA' && event.target.tagName !== 'SELECT') {
+      event.preventDefault();
+      ui.resetBtn.click();
+    }
+  });
+  document.addEventListener('keydown', (event) => {
+    if (event.code === 'KeyT' && event.target.tagName !== 'INPUT' && event.target.tagName !== 'TEXTAREA' && event.target.tagName !== 'SELECT') {
+      event.preventDefault();
+      ui.stepBtn.click();
+    }
+  });
 }
 
 
