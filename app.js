@@ -490,32 +490,113 @@ function drawAnts(program) {
   program.ants.forEach((ant, index) => {
     const cx = ant.x * cell + cell / 2;
     const cy = ant.y * cell + cell / 2;
-    const r = Math.max(6, cell * 0.22);
+    const size = Math.max(6, cell * 0.22);
 
     const colorIndex = ant.behaviorId % behaviorColors.length;
     const antColor = behaviorColors[colorIndex];
 
+    // Calculate direction vector for orientation
+    const dirVec = DIR_TO_VEC[ant.dir];
+    const angle = Math.atan2(dirVec.dy, dirVec.dx);
+
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.rotate(angle);
+
+    // Draw abdomen (back)
     ctx.fillStyle = antColor;
     ctx.strokeStyle = COLORS.antOutline;
-    ctx.lineWidth = 2;
+    ctx.lineWidth = 1;
     ctx.beginPath();
-    ctx.arc(cx, cy, r, 0, Math.PI * 2);
+    ctx.ellipse(-size * 0.8, 0, size * 0.6, size * 0.4, 0, 0, Math.PI * 2);
     ctx.fill();
     ctx.stroke();
 
-    const tipVec = DIR_TO_VEC[ant.dir];
+    // Draw thorax (middle)
     ctx.beginPath();
-    ctx.moveTo(cx, cy);
-    ctx.lineTo(cx + tipVec.dx * r * 1.6, cy + tipVec.dy * r * 1.6);
-    ctx.strokeStyle = COLORS.antOutline;
-    ctx.lineWidth = 2;
+    ctx.ellipse(-size * 0.2, 0, size * 0.5, size * 0.35, 0, 0, Math.PI * 2);
+    ctx.fill();
     ctx.stroke();
 
-    ctx.fillStyle = COLORS.antOutline;
-    ctx.font = `${Math.max(10, cell * 0.26)}px Inter, sans-serif`;
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    ctx.fillText(String(index), cx, cy);
+    // Draw head (front)
+    ctx.beginPath();
+    ctx.ellipse(size * 0.4, 0, size * 0.3, size * 0.25, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+
+    // Draw legs (6 legs)
+    ctx.strokeStyle = antColor;
+    ctx.lineWidth = 1;
+    const legLength = size * 0.6;
+    var yOffset = -1 * size * 0.25;
+    // Left legs
+    ctx.beginPath();
+    ctx.moveTo(-size * 0.2, yOffset);
+    ctx.lineTo(-size * 0.2 - legLength * 0.7, legLength * 0.5);
+    ctx.moveTo(-size * 0.2 - legLength * 0.7, legLength * 0.5);
+    ctx.lineTo(-size * 0.2 - legLength, legLength);
+    ctx.stroke();
+
+    //Middle Leg
+    ctx.beginPath();
+    ctx.moveTo(-size * 0.2, yOffset);
+    ctx.lineTo(-size * 0.2 , legLength * 0.5);
+    ctx.moveTo(-size * 0.2 , legLength * 0.5);
+    ctx.lineTo(-size * 0.2 , legLength);
+    ctx.stroke();
+
+    // Right legs
+    ctx.beginPath();
+    ctx.moveTo(-size * 0.2, yOffset);
+    ctx.lineTo(-size * 0.2 + legLength * 0.7, legLength * 0.5);
+    ctx.moveTo(-size * 0.2 + legLength * 0.7, legLength * 0.5);
+    ctx.lineTo(-size * 0.2 + legLength, legLength);
+    ctx.stroke();
+
+    var yOffset = 1 * size * 0.25;
+    // Left legs
+    ctx.beginPath();
+    ctx.moveTo(-size * 0.2, yOffset);
+    ctx.lineTo(-size * 0.2 - legLength * 0.7, -legLength * 0.5);
+    ctx.moveTo(-size * 0.2 - legLength * 0.7, -legLength * 0.5);
+    ctx.lineTo(-size * 0.2 - legLength, -legLength);
+    ctx.stroke();
+
+    //Middle Leg
+    ctx.beginPath();
+    ctx.moveTo(-size * 0.2, yOffset);
+    ctx.lineTo(-size * 0.2 , -legLength * 0.5);
+    ctx.moveTo(-size * 0.2 , -legLength * 0.5);
+    ctx.lineTo(-size * 0.2 , -legLength);
+    ctx.stroke();
+
+    // Right legs
+    ctx.beginPath();
+    ctx.moveTo(-size * 0.2, yOffset);
+    ctx.lineTo(-size * 0.2 + legLength * 0.7, -legLength * 0.5);
+    ctx.moveTo(-size * 0.2 + legLength * 0.7, -legLength * 0.5);
+    ctx.lineTo(-size * 0.2 + legLength, -legLength);
+    ctx.stroke();
+
+    // Draw antennae
+    ctx.strokeStyle = antColor;
+    ctx.lineWidth = 1;
+    const antLength = size * 0.5;
+    ctx.beginPath();
+    ctx.moveTo(size * 0.4, -size * 0.1);
+    ctx.lineTo(size * 0.4 + antLength, -size * 0.1 - antLength * 0.3);
+    ctx.moveTo(size * 0.4, size * 0.1);
+    ctx.lineTo(size * 0.4 + antLength, size * 0.1 + antLength * 0.3);
+    ctx.stroke();
+
+    ctx.restore();
+
+    // Draw ant number
+    // ctx.fillStyle = COLORS.antOutline;
+    // ctx.font = `${Math.max(10, cell * 0.26)}px Inter, sans-serif`;
+    // ctx.textAlign = "center";
+    // ctx.textBaseline = "middle";
+    // ctx.fillText(String(index), cx, cy);
   });
 
   ctx.textAlign = "start";
