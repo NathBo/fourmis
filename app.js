@@ -73,6 +73,8 @@ const ui = {
   behaviorNameInput: document.getElementById("behaviorNameInput"),
   renameBehaviorBtn: document.getElementById("renameBehaviorBtn"),
   currentBehaviorLabel: document.getElementById("currentBehaviorLabel"),
+  exportBehaviorBtn: null, // Will be created dynamically
+  importBehaviorBtn: null, // Will be created dynamically
   addAntBtn: document.getElementById("addAntBtn"),
   removeAntBtn: document.getElementById("removeAntBtn"),
   duplicateAntBtn: document.getElementById("duplicateAntBtn"),
@@ -687,7 +689,29 @@ function updateUI() {
 }
 
 function exportProgram() {
-  ui.jsonArea.value = JSON.stringify(editor.program, null, 2);
+  const data = JSON.stringify(editor.program, null, 2);
+  const blob = new Blob([data], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'program.json';
+  a.click();
+  URL.revokeObjectURL(url);
+  // Also set textarea for copy-paste
+  ui.jsonArea.value = data;
+}
+
+function exportBehavior() {
+  const currentBehavior = editor.program.behaviors.find(b => b.id === editor.currentBehaviorId);
+  if (!currentBehavior) return;
+  const data = JSON.stringify(currentBehavior, null, 2);
+  const blob = new Blob([data], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'behavior.json';
+  a.click();
+  URL.revokeObjectURL(url);
 }
 
 function importProgram() {
@@ -750,6 +774,30 @@ function validateProgramShape(program) {
   }
   if (program.behaviors && !Array.isArray(program.behaviors)) {
     throw new Error("behaviors invalide");
+  }
+}
+
+function validateBehaviorShape(behavior) {
+  if (typeof behavior.name !== 'string' || !behavior.name) {
+    throw new Error("nom invalide");
+  }
+  if (!behavior.transitions || typeof behavior.transitions !== 'object') {
+    throw new Error("transitions invalides");
+  }
+  for (const state in behavior.transitions) {
+    if (!behavior.transitions[state] || typeof behavior.transitions[state] !== 'object') {
+      throw new Error("état de transition invalide");
+    }
+    if (!behavior.transitions[state][0] || !behavior.transitions[state][1]) {
+      throw new Error("transitions incomplètes pour état " + state);
+    }
+    // Check each transition has move, writeBit, nextState
+    for (const bit of [0, 1]) {
+      const tr = behavior.transitions[state][bit];
+      if (!tr.move || typeof tr.writeBit !== 'number' || typeof tr.nextState !== 'number') {
+        throw new Error("transition invalide pour état " + state + " bit " + bit);
+      }
+    }
   }
 }
 
@@ -862,6 +910,15 @@ function updateBehaviorUI() {
 
   // Update behavior name input
   ui.behaviorNameInput.value = currentBehavior ? currentBehavior.name : "";
+
+  // Append export and import buttons if not already appended
+  const parent = ui.behaviorNameInput.parentElement;
+  if (!parent.contains(ui.exportBehaviorBtn)) {
+    parent.appendChild(ui.exportBehaviorBtn);
+  }
+  if (!parent.contains(ui.importBehaviorBtn)) {
+    parent.appendChild(ui.importBehaviorBtn);
+  }
 }
 
 function updateAntList() {
@@ -1013,6 +1070,12 @@ function duplicateAnt() {
 }
 
 function bindEvents() {
+  // Create behavior buttons
+  ui.exportBehaviorBtn = document.createElement('button');
+  ui.exportBehaviorBtn.textContent = 'Exporter';
+  ui.importBehaviorBtn = document.createElement('button');
+  ui.importBehaviorBtn.textContent = 'Importer';
+
   ui.canvas.addEventListener("click", (event) => {
     const { x, y } = canvasToCell(event);
     applyToolAt(x, y);
@@ -1074,6 +1137,50 @@ function bindEvents() {
   });
 
   ui.exportBtn.addEventListener("click", exportProgram);
+
+  // Create hidden file input for import
+  const fileInput = document.createElement('input');
+  fileInput.type = 'file';
+  fileInput.accept = '.json';
+  fileInput.style.display = 'none';
+  document.body.appendChild(fileInput);
+
+  ui.importBtn.addEventListener("click", () => fileInput.click());
+
+  fileInput.addEventListener('change', (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const imported = JSON.parse(e.target.result);
+        validateProgramShape(imported);
+
+        // Handle backward compatibility: convert old transitions to behaviors
+        if (imported.transitions && !imported.behaviors) {
+          imported.behaviors = [createBehavior(0, "Default")];
+          imported.behaviors[0].transitions = imported.transitions;
+          imported.nextBehaviorId = 1;
+          delete imported.transitions;
+        }
+
+        editor.program = imported;
+        ui.gridSizeInput.value = String(imported.width);
+        ui.stateCountInput.value = String(Object.keys(imported.behaviors[0]?.transitions || {}).length || 2);
+        resetSimulation();
+        updateBehaviorUI();
+        updateTransitionTable();
+        selectAnt(-1);
+        updateAntList();
+        renderAll();
+        // Also set textarea
+        ui.jsonArea.value = e.target.result;
+      } catch (error) {
+        alert(`Import impossible: ${error.message}`);
+      }
+    };
+    reader.readAsText(file);
+  });
   ui.currentBehaviorSelect.addEventListener("change", () => {
     editor.currentBehaviorId = Number(ui.currentBehaviorSelect.value);
     updateBehaviorUI();
@@ -1127,6 +1234,40 @@ function bindEvents() {
       currentBehavior.name = ui.behaviorNameInput.value || `Behavior ${currentBehavior.id}`;
       updateBehaviorUI();
     }
+  });
+
+  ui.exportBehaviorBtn.addEventListener("click", exportBehavior);
+
+  // Create hidden file input for behavior import
+  const behaviorFileInput = document.createElement('input');
+  behaviorFileInput.type = 'file';
+  behaviorFileInput.accept = '.json';
+  behaviorFileInput.style.display = 'none';
+  document.body.appendChild(behaviorFileInput);
+
+  ui.importBehaviorBtn.addEventListener("click", () => behaviorFileInput.click());
+
+  behaviorFileInput.addEventListener('change', (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const imported = JSON.parse(e.target.result);
+        validateBehaviorShape(imported);
+        // Assign new id
+        const newId = editor.program.nextBehaviorId++;
+        const newBehavior = { ...imported, id: newId };
+        editor.program.behaviors.push(newBehavior);
+        editor.currentBehaviorId = newId;
+        updateBehaviorUI();
+        updateTransitionTable();
+        renderAll();
+      } catch (error) {
+        alert(`Import comportement impossible: ${error.message}`);
+      }
+    };
+    reader.readAsText(file);
   });
 
   // Add listeners for ant property changes
