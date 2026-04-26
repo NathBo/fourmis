@@ -1135,6 +1135,14 @@ function bindEvents() {
   ui.duplicateAntBtn.addEventListener("click", duplicateAnt);
   ui.saveAntBtn.addEventListener("click", saveAnt);
   ui.cancelAntBtn.addEventListener("click", () => selectAnt(-1));
+
+  // Add keyboard shortcut for run button (Space key)
+  document.addEventListener('keydown', (event) => {
+    if (event.code === 'Space' && event.target.tagName !== 'INPUT' && event.target.tagName !== 'TEXTAREA' && event.target.tagName !== 'SELECT') {
+      event.preventDefault();
+      ui.runBtn.click();
+    }
+  });
 }
 
 
