@@ -1,0 +1,239 @@
+:root {
+  --bg: #0f1220;
+  --panel: #171b2e;
+  --panel-2: #1f2540;
+  --text: #edf1ff;
+  --muted: #aeb7d6;
+  --accent: #7aa2ff;
+  --danger: #ff7f7f;
+  --ok: #72d39a;
+  --grid0: #11152a;
+  --grid1: #89a7ff;
+  --line: #2a3157;
+  --marker-input: #3fd6ff;
+  --marker-output: #ffd166;
+  --marker-halt: #ff5d8f;
+  --ant: #ffffff;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.app {
+  display: grid;
+  grid-template-columns: 340px 1fr 380px;
+  min-height: 100vh;
+  gap: 0;
+}
+
+.panel {
+  background: var(--panel);
+  border-right: 1px solid var(--line);
+  overflow: auto;
+  padding: 16px;
+}
+
+.panel.right {
+  border-right: none;
+  border-left: 1px solid var(--line);
+}
+
+h1, h2, h3 {
+  margin: 0 0 10px;
+  line-height: 1.2;
+}
+
+h1 { font-size: 20px; }
+h2 { font-size: 16px; margin-top: 16px; }
+h3 { font-size: 14px; margin-top: 14px; color: var(--muted); }
+
+p, li, label, button, input, select, textarea {
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.muted { color: var(--muted); }
+.status.ok { color: var(--ok); }
+.status.danger { color: var(--danger); }
+
+.group {
+  background: var(--panel-2);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 12px;
+  margin-bottom: 12px;
+}
+
+.row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.row:last-child { margin-bottom: 0; }
+
+button, select, input, textarea {
+  background: #0f1430;
+  color: var(--text);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 8px 10px;
+}
+
+button {
+  cursor: pointer;
+  transition: 120ms ease;
+}
+
+button:hover { border-color: var(--accent); }
+button.active { outline: 2px solid var(--accent); }
+
+input[type="number"] { width: 90px; }
+input[type="text"] { width: 100%; }
+
+.main {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.main-top {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+  background: rgba(255,255,255,0.02);
+}
+
+.canvas-wrap {
+  flex: 1;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  min-height: 0;
+}
+
+canvas {
+  background: #0a0d19;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  max-width: 100%;
+  max-height: calc(100vh - 110px);
+  image-rendering: pixelated;
+}
+
+.tool-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.small {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.table-wrap {
+  padding: 0;
+  overflow: auto;
+  max-height: 52vh;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  overflow: hidden;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+}
+
+th, td {
+  border-bottom: 1px solid var(--line);
+  padding: 8px;
+  text-align: left;
+  vertical-align: middle;
+  font-size: 13px;
+}
+
+th {
+  background: rgba(255,255,255,0.04);
+  color: var(--muted);
+  position: sticky;
+  top: 0;
+}
+
+td select, td input {
+  width: 100%;
+  min-width: 0;
+  padding: 6px 8px;
+  font-size: 13px;
+}
+
+pre {
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+  background: #0f1430;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 12px;
+  font-size: 12px;
+  color: #d9e2ff;
+  max-height: 280px;
+  overflow: auto;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #0f1430;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 6px 10px;
+  font-size: 12px;
+}
+
+.legend {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 6px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.swatch {
+  width: 14px;
+  height: 14px;
+  border-radius: 4px;
+  border: 1px solid rgba(255,255,255,0.2);
+  flex: 0 0 auto;
+}
+
+.mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+
+@media (max-width: 1280px) {
+  .app {
+    grid-template-columns: 320px 1fr;
+  }
+
+  .panel.right {
+    grid-column: 1 / -1;
+    border-left: none;
+    border-top: 1px solid var(--line);
+  }
+}

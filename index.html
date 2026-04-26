@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<!-- /mnt/data/ant_computer_v1_split/index.html -->
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ordinateur en fourmis — V1</title>
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+  <div class="app">
+    <aside class="panel">
+      <h1>Ordinateur en fourmis — V1</h1>
+      <p class="muted">
+        Monde binaire, fourmis automates finis, arrêt quand la case <span class="mono">HALT</span> passe à <span class="mono">1</span>.
+      </p>
+
+      <div class="group">
+        <h2>Édition</h2>
+        <div class="tool-grid" id="toolButtons"></div>
+        <div class="row" style="margin-top:10px;">
+          <label>Valeur input</label>
+          <select id="inputValue">
+            <option value="0">0</option>
+            <option value="1" selected>1</option>
+          </select>
+        </div>
+        <div class="row">
+          <label>Direction fourmi</label>
+          <select id="antDir">
+            <option value="N">N</option>
+            <option value="E" selected>E</option>
+            <option value="S">S</option>
+            <option value="W">W</option>
+          </select>
+          <label>État</label>
+          <input id="antState" type="number" min="0" step="1" value="0" />
+        </div>
+        <div class="small">
+          Clic gauche pour poser. Le mode <span class="mono">Effacer</span> enlève marqueurs et fourmis initiales, et remet la case à 0.
+        </div>
+      </div>
+
+      <div class="group">
+        <h2>Simulation</h2>
+        <div class="row">
+          <button id="runBtn">Lancer</button>
+          <button id="pauseBtn">Pause</button>
+          <button id="stepBtn">Tick</button>
+          <button id="resetBtn">Reset</button>
+        </div>
+        <div class="row">
+          <button id="clearBtn">Tout effacer</button>
+          <button id="demoBtn">Démo</button>
+        </div>
+        <div class="row">
+          <label>Ticks / sec</label>
+          <input id="speedInput" type="number" min="1" max="120" step="1" value="10" />
+          <label>Taille grille</label>
+          <input id="gridSizeInput" type="number" min="8" max="64" step="1" value="24" />
+          <button id="resizeBtn">Redimensionner</button>
+        </div>
+        <div class="row">
+          <span class="pill">Tick <span id="tickLabel" class="mono">0</span></span>
+          <span class="pill">État <span id="runStateLabel" class="mono">stopped</span></span>
+          <span class="pill">HALT <span id="haltLabel" class="mono">0</span></span>
+        </div>
+        <div id="outputSummary" class="small"></div>
+      </div>
+
+      <div class="group">
+        <h2>Légende</h2>
+        <div class="legend">
+          <div class="legend-item"><span class="swatch" style="background:var(--grid0)"></span> Case 0</div>
+          <div class="legend-item"><span class="swatch" style="background:var(--grid1)"></span> Case 1</div>
+          <div class="legend-item"><span class="swatch" style="background:var(--marker-input)"></span> INPUT</div>
+          <div class="legend-item"><span class="swatch" style="background:var(--marker-output)"></span> OUTPUT</div>
+          <div class="legend-item"><span class="swatch" style="background:var(--marker-halt)"></span> HALT</div>
+          <div class="legend-item"><span class="swatch" style="background:var(--ant)"></span> Fourmi</div>
+        </div>
+      </div>
+
+      <div class="group">
+        <h2>Règles choisies</h2>
+        <ul class="small">
+          <li>La fourmi lit le bit de sa case courante.</li>
+          <li>Transition = <span class="mono">(state, bit)</span> → <span class="mono">(move, writeBit, nextState)</span>.</li>
+          <li>Elle se déplace, puis écrit sur la case qu’elle quitte.</li>
+          <li>Ordre déterministe : fourmi 0, puis 1, puis 2…</li>
+          <li>La simulation s’arrête dès que la case HALT vaut 1.</li>
+          <li>Les marqueurs INPUT / OUTPUT / HALT n’influencent pas les règles des fourmis.</li>
+          <li>Le monde wrappe sur les bords comme Pac-Man.</li>
+        </ul>
+      </div>
+    </aside>
+
+    <main class="main">
+      <div class="main-top">
+        <span class="pill">Outil <span id="currentToolLabel" class="mono">bit1</span></span>
+        <span class="pill">Fourmis initiales <span id="antCountLabel" class="mono">0</span></span>
+        <span class="pill">Outputs <span id="outputCountLabel" class="mono">0</span></span>
+        <span id="statusLabel" class="status muted">Prêt</span>
+      </div>
+      <div class="canvas-wrap">
+        <canvas id="worldCanvas" width="720" height="720"></canvas>
+      </div>
+    </main>
+
+    <aside class="panel right">
+      <h2>Transitions</h2>
+      <div class="group">
+        <div class="row">
+          <label>Nombre d’états</label>
+          <input id="stateCountInput" type="number" min="1" max="16" step="1" value="2" />
+          <button id="applyStateCountBtn">Appliquer</button>
+        </div>
+        <div class="small">
+          Pour chaque état, il y a une règle pour lecture 0 et une règle pour lecture 1.
+        </div>
+      </div>
+
+      <div class="group table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>État</th>
+              <th>Bit lu</th>
+              <th>Mouvement</th>
+              <th>Écrit</th>
+              <th>Next</th>
+            </tr>
+          </thead>
+          <tbody id="transitionBody"></tbody>
+        </table>
+      </div>
+
+      <div class="group">
+        <h2>JSON</h2>
+        <div class="row">
+          <button id="exportBtn">Exporter</button>
+          <button id="importBtn">Importer</button>
+        </div>
+        <textarea id="jsonArea" rows="12" spellcheck="false"></textarea>
+      </div>
+
+      <div class="group">
+        <h2>État courant</h2>
+        <pre id="runtimeDump"></pre>
+      </div>
+    </aside>
+  </div>
+
+  <script src="./app.js"></script>
+</body>
+</html>
