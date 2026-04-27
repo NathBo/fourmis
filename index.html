@@ -19,7 +19,7 @@
         <h2>Édition</h2>
         <div class="tool-grid" id="toolButtons"></div>
         <div class="row" style="margin-top:10px;">
-          <label>Valeur input</label>
+          <label for="inputValue">Valeur input</label>
           <select id="inputValue">
             <option value="0">0</option>
             <option value="1" selected>1</option>
@@ -48,7 +48,7 @@
           <button id="removeBehaviorBtn">Supprimer</button>
         </div>
         <div class="row">
-          <label>Nom</label>
+          <label for="behaviorNameInput">Nom</label>
           <input id="behaviorNameInput" type="text" value="Default" />
           <button id="renameBehaviorBtn">Renommer</button>
         </div>
@@ -66,22 +66,22 @@
         </div>
         <div id="antEditor" class="ant-editor" style="display: none;">
           <div class="row">
-            <label>Position X</label>
+            <label for="antXInput">Position X</label>
             <input id="antXInput" type="number" min="0" value="0" />
-            <label>Y</label>
+            <label for="antYInput">Y</label>
             <input id="antYInput" type="number" min="0" value="0" />
           </div>
           <div class="row">
-            <label>Direction</label>
+            <label for="antDirInput">Direction</label>
             <select id="antDirInput">
               <option value="N">N</option>
               <option value="E" selected>E</option>
               <option value="S">S</option>
               <option value="W">W</option>
             </select>
-            <label>État</label>
+            <label for="antStateInput">État</label>
             <input id="antStateInput" type="number" min="0" step="1" value="0" />
-            <label>Comportement</label>
+            <label for="antBehaviorInput">Comportement</label>
             <select id="antBehaviorInput">
               <option value="0">Default</option>
             </select>
@@ -110,9 +110,9 @@
           <button id="demoBtn">Démo</button>
         </div>
         <div class="row">
-          <label>Ticks / sec</label>
+          <label for="speedInput">Ticks / sec</label>
           <input id="speedInput" type="number" min="1" max="120" step="1" value="10" />
-          <label>Taille grille</label>
+          <label for="gridSizeInput">Taille grille</label>
           <input id="gridSizeInput" type="number" min="8" max="64" step="1" value="24" />
           <button id="resizeBtn">Redimensionner</button>
         </div>
@@ -166,7 +166,7 @@
       <h2>Transitions <span id="currentBehaviorLabel" class="mono">(Default)</span></h2>
       <div class="group">
         <div class="row">
-          <label>Nombre d'états</label>
+          <label for="stateCountInput">Nombre d'états</label>
           <input id="stateCountInput" type="number" min="1" max="16" step="1" value="2" />
           <button id="applyStateCountBtn">Appliquer</button>
         </div>

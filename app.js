@@ -641,6 +641,7 @@ function renderInputList() {
     info.innerHTML = `<strong>INPUT ${index}</strong><br>(${input.x}, ${input.y})`;
 
     const valueSelect = document.createElement("select");
+    valueSelect.name = `input-value-${index}`;
     [0, 1].forEach((bit) => {
       const opt = document.createElement("option");
       opt.value = String(bit);
@@ -728,6 +729,7 @@ function updateTransitionTable() {
       `;
 
       const moveSelect = document.createElement("select");
+      moveSelect.name = `transition-move-${state}-${bit}`;
       for (const move of MOVE_OPTIONS) {
         const opt = document.createElement("option");
         opt.value = move;
@@ -744,6 +746,7 @@ function updateTransitionTable() {
       });
 
       const writeSelect = document.createElement("select");
+      writeSelect.name = `transition-write-${state}-${bit}`;
       [0, 1].forEach((writeBit) => {
         const opt = document.createElement("option");
         opt.value = String(writeBit);
@@ -760,6 +763,7 @@ function updateTransitionTable() {
       });
 
       const nextStateInput = document.createElement("input");
+      nextStateInput.name = `transition-next-state-${state}-${bit}`;
       nextStateInput.type = "number";
       nextStateInput.min = "0";
       nextStateInput.step = "1";
@@ -1303,6 +1307,7 @@ function bindEvents() {
   // Create hidden file input for import
   const fileInput = document.createElement('input');
   fileInput.type = 'file';
+  fileInput.name = 'program-import-file';
   fileInput.accept = '.json';
   fileInput.style.display = 'none';
   document.body.appendChild(fileInput);
@@ -1403,6 +1408,7 @@ function bindEvents() {
   // Create hidden file input for behavior import
   const behaviorFileInput = document.createElement('input');
   behaviorFileInput.type = 'file';
+  behaviorFileInput.name = 'behavior-import-file';
   behaviorFileInput.accept = '.json';
   behaviorFileInput.style.display = 'none';
   document.body.appendChild(behaviorFileInput);
@@ -1439,29 +1445,42 @@ function bindEvents() {
   ui.saveAntBtn.addEventListener("click", saveAnt);
   ui.cancelAntBtn.addEventListener("click", () => selectAnt(-1));
 
-  // Add keyboard shortcut for run button (Space key)
+  // Add keyboard shortcuts for app controls and tool switching
   document.addEventListener('keydown', (event) => {
-    if (event.code === 'Space' && event.target.tagName !== 'INPUT' && event.target.tagName !== 'TEXTAREA' && event.target.tagName !== 'SELECT') {
-      event.preventDefault();
-      ui.runBtn.click();
+    const activeTag = event.target.tagName;
+    if (activeTag === 'INPUT' || activeTag === 'TEXTAREA' || activeTag === 'SELECT') {
+      return;
     }
-  });
-  document.addEventListener('keydown', (event) => {
-    if (event.code === 'KeyP' && event.target.tagName !== 'INPUT' && event.target.tagName !== 'TEXTAREA' && event.target.tagName !== 'SELECT') {
-      event.preventDefault();
-      ui.pauseBtn.click();
-    }
-  });
-  document.addEventListener('keydown', (event) => {
-    if (event.code === 'KeyR' && event.target.tagName !== 'INPUT' && event.target.tagName !== 'TEXTAREA' && event.target.tagName !== 'SELECT') {
-      event.preventDefault();
-      ui.resetBtn.click();
-    }
-  });
-  document.addEventListener('keydown', (event) => {
-    if (event.code === 'KeyT' && event.target.tagName !== 'INPUT' && event.target.tagName !== 'TEXTAREA' && event.target.tagName !== 'SELECT') {
-      event.preventDefault();
-      ui.stepBtn.click();
+
+    switch (event.code) {
+      case 'Space':
+        event.preventDefault();
+        ui.runBtn.click();
+        break;
+      case 'KeyP':
+        event.preventDefault();
+        ui.pauseBtn.click();
+        break;
+      case 'KeyR':
+        event.preventDefault();
+        ui.resetBtn.click();
+        break;
+      case 'KeyT':
+        event.preventDefault();
+        ui.stepBtn.click();
+        break;
+      case 'Digit1':
+      case 'Numpad1':
+        event.preventDefault();
+        setTool('bit1');
+        break;
+      case 'Digit0':
+      case 'Numpad0':
+        event.preventDefault();
+        setTool('bit0');
+        break;
+      default:
+        break;
     }
   });
 }
