@@ -1,0 +1,1088 @@
+{
+  "width": 24,
+  "height": 24,
+  "grid": [
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      1
+    ],
+    [
+      1,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  ],
+  "markers": {
+    "inputs": [
+      {
+        "x": 3,
+        "y": 16,
+        "value": 1
+      },
+      {
+        "x": 8,
+        "y": 17,
+        "value": 1
+      }
+    ],
+    "outputs": [
+      {
+        "x": 20,
+        "y": 9
+      }
+    ],
+    "halt": {
+      "x": 19,
+      "y": 6
+    }
+  },
+  "ants": [
+    {
+      "x": 2,
+      "y": 10,
+      "dir": "E",
+      "state": 0,
+      "behaviorId": 6
+    },
+    {
+      "x": 3,
+      "y": 17,
+      "dir": "N",
+      "state": 0,
+      "behaviorId": 0
+    },
+    {
+      "x": 8,
+      "y": 18,
+      "dir": "N",
+      "state": 0,
+      "behaviorId": 0
+    }
+  ],
+  "behaviors": [
+    {
+      "id": 0,
+      "name": "Transport_Propre",
+      "transitions": {
+        "0": {
+          "0": {
+            "move": "stay",
+            "writeBit": 0,
+            "nextState": 0
+          },
+          "1": {
+            "move": "forward",
+            "writeBit": 1,
+            "nextState": 1
+          }
+        },
+        "1": {
+          "0": {
+            "move": "forward",
+            "writeBit": 0,
+            "nextState": 2
+          },
+          "1": {
+            "move": "forward",
+            "writeBit": 1,
+            "nextState": 3
+          }
+        },
+        "2": {
+          "0": {
+            "move": "forward",
+            "writeBit": 0,
+            "nextState": 2
+          },
+          "1": {
+            "move": "forward",
+            "writeBit": 1,
+            "nextState": 4
+          }
+        },
+        "3": {
+          "0": {
+            "move": "forward",
+            "writeBit": 0,
+            "nextState": 3
+          },
+          "1": {
+            "move": "forward",
+            "writeBit": 1,
+            "nextState": 5
+          }
+        },
+        "4": {
+          "0": {
+            "move": "left",
+            "writeBit": 0,
+            "nextState": 6
+          },
+          "1": {
+            "move": "left",
+            "writeBit": 1,
+            "nextState": 2
+          }
+        },
+        "5": {
+          "0": {
+            "move": "left",
+            "writeBit": 1,
+            "nextState": 7
+          },
+          "1": {
+            "move": "left",
+            "writeBit": 1,
+            "nextState": 3
+          }
+        },
+        "6": {
+          "0": {
+            "move": "forward",
+            "writeBit": 1,
+            "nextState": 2
+          },
+          "1": {
+            "move": "stay",
+            "writeBit": 1,
+            "nextState": 6
+          }
+        },
+        "7": {
+          "0": {
+            "move": "forward",
+            "writeBit": 1,
+            "nextState": 3
+          },
+          "1": {
+            "move": "stay",
+            "writeBit": 1,
+            "nextState": 7
+          }
+        }
+      }
+    },
+    {
+      "id": 1,
+      "name": "Stop",
+      "transitions": {
+        "0": {
+          "0": {
+            "move": "back",
+            "writeBit": 1,
+            "nextState": 1
+          },
+          "1": {
+            "move": "forward",
+            "writeBit": 1,
+            "nextState": 0
+          }
+        },
+        "1": {
+          "0": {
+            "move": "back",
+            "writeBit": 0,
+            "nextState": 0
+          },
+          "1": {
+            "move": "forward",
+            "writeBit": 1,
+            "nextState": 1
+          }
+        }
+      }
+    },
+    {
+      "id": 4,
+      "name": "Not_Propre",
+      "transitions": {
+        "0": {
+          "0": {
+            "move": "stay",
+            "writeBit": 0,
+            "nextState": 0
+          },
+          "1": {
+            "move": "forward",
+            "writeBit": 1,
+            "nextState": 1
+          }
+        },
+        "1": {
+          "0": {
+            "move": "forward",
+            "writeBit": 0,
+            "nextState": 3
+          },
+          "1": {
+            "move": "forward",
+            "writeBit": 1,
+            "nextState": 2
+          }
+        },
+        "2": {
+          "0": {
+            "move": "forward",
+            "writeBit": 0,
+            "nextState": 2
+          },
+          "1": {
+            "move": "forward",
+            "writeBit": 1,
+            "nextState": 4
+          }
+        },
+        "3": {
+          "0": {
+            "move": "forward",
+            "writeBit": 0,
+            "nextState": 3
+          },
+          "1": {
+            "move": "forward",
+            "writeBit": 1,
+            "nextState": 5
+          }
+        },
+        "4": {
+          "0": {
+            "move": "left",
+            "writeBit": 0,
+            "nextState": 6
+          },
+          "1": {
+            "move": "left",
+            "writeBit": 1,
+            "nextState": 2
+          }
+        },
+        "5": {
+          "0": {
+            "move": "left",
+            "writeBit": 1,
+            "nextState": 7
+          },
+          "1": {
+            "move": "left",
+            "writeBit": 1,
+            "nextState": 3
+          }
+        },
+        "6": {
+          "0": {
+            "move": "forward",
+            "writeBit": 1,
+            "nextState": 2
+          },
+          "1": {
+            "move": "stay",
+            "writeBit": 1,
+            "nextState": 6
+          }
+        },
+        "7": {
+          "0": {
+            "move": "forward",
+            "writeBit": 1,
+            "nextState": 3
+          },
+          "1": {
+            "move": "stay",
+            "writeBit": 1,
+            "nextState": 7
+          }
+        }
+      }
+    },
+    {
+      "id": 6,
+      "name": "And_Propre",
+      "transitions": {
+        "0": {
+          "0": {
+            "move": "stay",
+            "writeBit": 0,
+            "nextState": 0
+          },
+          "1": {
+            "move": "forward",
+            "writeBit": 1,
+            "nextState": 1
+          }
+        },
+        "1": {
+          "0": {
+            "move": "forward",
+            "writeBit": 0,
+            "nextState": 8
+          },
+          "1": {
+            "move": "forward",
+            "writeBit": 1,
+            "nextState": 9
+          }
+        },
+        "2": {
+          "0": {
+            "move": "forward",
+            "writeBit": 0,
+            "nextState": 2
+          },
+          "1": {
+            "move": "forward",
+            "writeBit": 1,
+            "nextState": 4
+          }
+        },
+        "3": {
+          "0": {
+            "move": "forward",
+            "writeBit": 0,
+            "nextState": 3
+          },
+          "1": {
+            "move": "forward",
+            "writeBit": 1,
+            "nextState": 5
+          }
+        },
+        "4": {
+          "0": {
+            "move": "left",
+            "writeBit": 0,
+            "nextState": 6
+          },
+          "1": {
+            "move": "left",
+            "writeBit": 1,
+            "nextState": 2
+          }
+        },
+        "5": {
+          "0": {
+            "move": "left",
+            "writeBit": 1,
+            "nextState": 7
+          },
+          "1": {
+            "move": "left",
+            "writeBit": 1,
+            "nextState": 3
+          }
+        },
+        "6": {
+          "0": {
+            "move": "forward",
+            "writeBit": 1,
+            "nextState": 2
+          },
+          "1": {
+            "move": "stay",
+            "writeBit": 1,
+            "nextState": 6
+          }
+        },
+        "7": {
+          "0": {
+            "move": "forward",
+            "writeBit": 1,
+            "nextState": 3
+          },
+          "1": {
+            "move": "stay",
+            "writeBit": 1,
+            "nextState": 7
+          }
+        },
+        "8": {
+          "0": {
+            "move": "forward",
+            "writeBit": 0,
+            "nextState": 8
+          },
+          "1": {
+            "move": "right",
+            "writeBit": 0,
+            "nextState": 10
+          }
+        },
+        "9": {
+          "0": {
+            "move": "forward",
+            "writeBit": 0,
+            "nextState": 9
+          },
+          "1": {
+            "move": "left",
+            "writeBit": 0,
+            "nextState": 11
+          }
+        },
+        "10": {
+          "0": {
+            "move": "stay",
+            "writeBit": 0,
+            "nextState": 10
+          },
+          "1": {
+            "move": "right",
+            "writeBit": 1,
+            "nextState": 12
+          }
+        },
+        "11": {
+          "0": {
+            "move": "stay",
+            "writeBit": 0,
+            "nextState": 11
+          },
+          "1": {
+            "move": "right",
+            "writeBit": 1,
+            "nextState": 13
+          }
+        },
+        "12": {
+          "0": {
+            "move": "forward",
+            "writeBit": 0,
+            "nextState": 2
+          },
+          "1": {
+            "move": "forward",
+            "writeBit": 1,
+            "nextState": 2
+          }
+        },
+        "13": {
+          "0": {
+            "move": "forward",
+            "writeBit": 0,
+            "nextState": 2
+          },
+          "1": {
+            "move": "forward",
+            "writeBit": 1,
+            "nextState": 3
+          }
+        }
+      }
+    }
+  ],
+  "nextBehaviorId": 7
+}
